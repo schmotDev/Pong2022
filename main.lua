@@ -18,6 +18,7 @@ player2Posy = screenHeight/2 - RAQUETTE.hauteur/2 + limiteHAUT
 scorePlayer2 = 0
 
 pause = true
+point = false
 
 balle = {}
 balle.LARGEUR = 10
@@ -30,6 +31,10 @@ balle.vitesseY = 2
 sndMur = love.audio.newSource("mur.wav", "static")
 sndPerdu = love.audio.newSource("perdu.wav", "static")
 
+trail = {}
+impact = {}
+explosion = {}
+
 
 function BalleCentre()
   balle.x = screenWidth / 2 - balle.LARGEUR / 2
@@ -39,8 +44,41 @@ function BalleCentre()
   balle.vitesseY = 2
 end
 
+function ExploseBalle(dt)
+  for n=#explosion, 1,-1 do
+    local exp = explosion[n]
+    exp.vie = exp.vie - dt
+    exp.x = exp.x + exp.vx 
+    exp.y = exp.y + exp.vy
+    if exp.vie <= 0 then
+      table.remove(explosion, n)
+    end
+  end
+  
+  myExplose = {}
+  myExplose.x = impact.x
+  myExplose.y = impact.y
+  myExplose.vie = 1
+  myExplose.vx = math.random(-1, 1)
+  myExplose.vy = math.random(-1, 1)
+  table.insert(explosion, myExplose)
+  
+end
 
-function DeplaceBalle()
+function DeplaceBalle(dt)
+  
+  for n=#trail,1,-1 do
+    local t = trail[n]
+    t.vie = t.vie - dt
+    if t.vie <= 0 then
+      table.remove(trail, n)
+    end
+  end
+  myTrail = {}
+  myTrail.x = balle.x
+  myTrail.y = balle.y
+  myTrail.vie = 0.5
+  table.insert(trail, myTrail)
   
   balle.x = balle.x + balle.vitesseX
   
@@ -75,9 +113,17 @@ function Point(joueur)
     scorePlayer2 = scorePlayer2 + 1
   end
   
+  for n=#trail,1,-1 do
+    local t = trail[n]
+    table.remove(trail, n)
+  end
+  
   affichage = joueur.." WON THIS ROUND!!!!! PRESS SPACE TO CONTINUE"
+  impact.x = balle.x
+  impact.y = balle.y
   BalleCentre()
   pause = true
+  point = true
   
   if scorePlayer1 == 10 or scorePlayer2 == 10 then
     affichage = joueur.." IS THE WINNER !!!! PRESS SPACE TO RESTART"
@@ -125,6 +171,7 @@ function DeplaceJoueur()
   
   if love.keyboard.isDown("space") and player2Posy > limiteHAUT then
     pause = false
+    point = false
   end
   
 end
@@ -141,12 +188,14 @@ function love.load()
   screenStart()
 end
 
-function love.update()
+function love.update(dt)
   
   DeplaceJoueur()
   
   if (pause == false) then
-    DeplaceBalle()
+    DeplaceBalle(dt)
+  elseif (point == true) then
+    ExploseBalle(dt)
   end
   
   --if point then Point() end
@@ -162,12 +211,27 @@ function love.draw()
   love.graphics.rectangle("fill", player1Posx,player1Posy, RAQUETTE.largeur,RAQUETTE.hauteur)
   love.graphics.rectangle("fill", player2Posx-RAQUETTE.largeur,player2Posy, RAQUETTE.largeur,RAQUETTE.hauteur)
   
+  for n=1, #trail do
+    local t = trail[n]
+    love.graphics.setColor(1,1,1, t.vie/2)
+    love.graphics.rectangle("fill", t.x,t.y, balle.LARGEUR,balle.HAUTEUR)
+  end  
+  love.graphics.setColor(1,1,1, 1)
   love.graphics.rectangle("fill", balle.x,balle.y, balle.LARGEUR,balle.HAUTEUR)
   
   if pause then
     local font = love.graphics.getFont()
     local largeur_afficharge = font:getWidth(affichage)
     love.graphics.print(affichage, (screenWidth-largeur_afficharge)/2, screenHeight/2)
+    
+    if point then
+      for n=1, #explosion do
+        local exp = explosion[n]
+        love.graphics.setColor(1,1,1, exp.vie/2)
+        love.graphics.circle("line", exp.x + balle.LARGEUR/2,exp.y + balle.LARGEUR/2, balle.LARGEUR/3)
+        love.graphics.setColor(1,1,1, 1)
+      end  
+    end
   end
   
  
