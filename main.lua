@@ -59,8 +59,11 @@ function ExploseBalle(dt)
   myExplose.x = impact.x
   myExplose.y = impact.y
   myExplose.vie = 1
-  myExplose.vx = math.random(-1, 1)
-  myExplose.vy = math.random(-1, 1)
+  myExplose.vx = math.random(-3, 3)
+  myExplose.vy = math.random(-3, 3)
+  myExplose.colorR = math.random()
+  myExplose.colorV = math.random()
+  myExplose.colorB = math.random()
   table.insert(explosion, myExplose)
   
 end
@@ -227,7 +230,7 @@ function love.draw()
     if point then
       for n=1, #explosion do
         local exp = explosion[n]
-        love.graphics.setColor(1,1,1, exp.vie/2)
+        love.graphics.setColor(exp.colorR,exp.colorV,exp.colorB, exp.vie/2)
         love.graphics.circle("line", exp.x + balle.LARGEUR/2,exp.y + balle.LARGEUR/2, balle.LARGEUR/3)
         love.graphics.setColor(1,1,1, 1)
       end  
