@@ -3,8 +3,10 @@ love.graphics.setDefaultFilter("nearest")
 
 raquette = {}
 raquette.image = love.graphics.newImage("images/pong.png")
+raquette.image = love.graphics.newImage("images/paddle.png")
+
 raquette.frames = {}
-raquette.frames[1] = love.graphics.newQuad(65,0,46,8,raquette.image:getWidth(),raquette.image:getHeight())
+raquette.frames[1] = love.graphics.newQuad(112,127,116,9,raquette.image:getWidth(),raquette.image:getHeight())
 raquette.frame = 1
 raquette.type = 0 -- raquette normale
 raquette.largeur = 10
@@ -241,8 +243,8 @@ function love.draw()
 
   --love.graphics.rectangle("fill", player1Posx+10,player1Posy, raquette.largeur,raquette.hauteur)
   --love.graphics.rectangle("fill", player2Posx-raquette.largeur,player2Posy, raquette.largeur,raquette.hauteur)
-  love.graphics.draw(raquette.image, raquette.frames[1], player1Posx,player1Posy+80, math.rad(-90), 80/46, 10/8)
-  love.graphics.draw(raquette.image, raquette.frames[1], player2Posx-raquette.largeur,player2Posy+80, math.rad(-90), 80/46, 10/8)
+  love.graphics.draw(raquette.image, raquette.frames[1], player1Posx,player1Posy+80, math.rad(-90), 80/116, 10/9)
+  love.graphics.draw(raquette.image, raquette.frames[1], player2Posx-raquette.largeur,player2Posy+80, math.rad(-90), 80/116, 10/9)
 
   for n=1, #trail do
     local t = trail[n]
