@@ -29,8 +29,8 @@ pause = true
 point = false
 
 balle = {}
-balle.LARGEUR = 10
-balle.HAUTEUR = 10
+balle.LARGEUR = 14
+balle.HAUTEUR = 14
 balle.x = 0
 balle.y = 0
 balle.vitesseX = 2
@@ -46,8 +46,8 @@ explosion = {}
 machin = 0
 
 function BalleCentre()
-  balle.x = screenWidth / 2 - balle.LARGEUR / 2
-  balle.y = screenHeight / 2 - balle.HAUTEUR / 2 + limiteHAUT
+  balle.x = (limiteDROITE-limiteGAUCHE) / 2 - balle.LARGEUR / 2
+  balle.y = (limiteBAS-limiteHAUT) / 2 - balle.HAUTEUR / 2 + limiteHAUT
   
   balle.vitesseX = 2
   balle.vitesseY = 2
@@ -240,18 +240,19 @@ function love.draw()
   love.graphics.print("SCORE: "..scorePlayer2, (limiteDROITE-100),25)
 
   --love.graphics.rectangle("fill", player1Posx+10,player1Posy, raquette.largeur,raquette.hauteur)
-  love.graphics.rectangle("fill", player2Posx-raquette.largeur,player2Posy, raquette.largeur,raquette.hauteur)
+  --love.graphics.rectangle("fill", player2Posx-raquette.largeur,player2Posy, raquette.largeur,raquette.hauteur)
   love.graphics.draw(raquette.image, raquette.frames[1], player1Posx,player1Posy+80, math.rad(-90), 80/46, 10/8)
-  
+  love.graphics.draw(raquette.image, raquette.frames[1], player2Posx-raquette.largeur,player2Posy+80, math.rad(-90), 80/46, 10/8)
+
   for n=1, #trail do
     local t = trail[n]
     love.graphics.setColor(1,1,1, t.vie/2)
-    love.graphics.circle("fill", t.x,t.y, balle.LARGEUR/2)
-    --love.graphics.draw(balle.image, balle.frames[1], balle.x, balle.y, 0, 1,1, 5, 5)
+    --love.graphics.circle("fill", t.x,t.y, balle.LARGEUR/2)
+    love.graphics.draw(balle.image, balle.frames[1], t.x, t.y, 0, 1,1, 0, 0)
   end  
   love.graphics.setColor(1,1,1, 1)
   --love.graphics.rectangle("fill", balle.x,balle.y, balle.LARGEUR,balle.HAUTEUR)
-  love.graphics.draw(balle.image, balle.frames[1], balle.x, balle.y, 0, 1,1, 5, 5)
+  love.graphics.draw(balle.image, balle.frames[1], balle.x, balle.y, 0, 1,1, 0, 0)
   
   if pause then
     local font = love.graphics.getFont()
